@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Company Profile Generator</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        .loader {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #3498db;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            display: none;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <div class="min-h-screen">
+        <!-- Header -->
+        <header class="bg-white shadow-sm">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+                <h1 class="text-3xl font-bold text-gray-900">Company Profile Generator</h1>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            <!-- Input Section -->
+            <div class="bg-white rounded-lg shadow-sm p-6 mb-8">
+                <form id="companyForm" class="space-y-6">
+                    <div>
+                        <label for="companyName" class="block text-sm font-medium text-gray-700">Company Name</label>
+                        <input type="text" id="companyName" name="companyName" required
+                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm p-2 border">
+                    </div>
+                    <div class="flex items-center space-x-4">
+                        <button type="submit"
+                            class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                            Generate Profile
+                        </button>
+                        <div id="loader" class="loader"></div>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Results Section -->
+            <div id="results" class="hidden space-y-8">
+                <!-- Download Links -->
+                <div class="bg-white rounded-lg shadow-sm p-6">
+                    <h2 class="text-xl font-semibold mb-4">Generated Files</h2>
+                    <div class="space-y-4">
+                        <a href="#" id="pptDownload" class="flex items-center space-x-2 text-blue-600 hover:text-blue-800">
+                            <i class="bi bi-file-earmark-ppt"></i>
+                            <span>Download PowerPoint Presentation</span>
+                        </a>
+                        <a href="#" id="pdfDownload" class="flex items-center space-x-2 text-blue-600 hover:text-blue-800">
+                            <i class="bi bi-file-earmark-pdf"></i>
+                            <span>Download PDF Version</span>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Web Preview -->
+                <div class="bg-white rounded-lg shadow-sm p-6">
+                    <h2 class="text-xl font-semibold mb-4">Web Preview</h2>
+                    <div id="webPreview" class="space-y-6">
+                        <!-- Company Overview -->
+                        <section class="space-y-4">
+                            <h3 class="text-lg font-semibold text-gray-900">Company Overview</h3>
+                            <div class="grid md:grid-cols-2 gap-4">
+                                <div class="p-4 bg-gray-50 rounded-lg">
+                                    <p class="font-medium text-gray-700">Industry</p>
+                                    <p id="industry" class="text-gray-600">Loading...</p>
+                                </div>
+                                <div class="p-4 bg-gray-50 rounded-lg">
+                                    <p class="font-medium text-gray-700">Location</p>
+                                    <p id="location" class="text-gray-600">Loading...</p>
+                                </div>
+                            </div>
+                        </section>
+
+                        <!-- Financial Highlights -->
+                        <section class="space-y-4">
+                            <h3 class="text-lg font-semibold text-gray-900">Financial Highlights</h3>
+                            <div class="grid md:grid-cols-2 gap-4">
+                                <div class="p-4 bg-gray-50 rounded-lg">
+                                    <p class="font-medium text-gray-700">Revenue</p>
+                                    <p id="revenue" class="text-gray-600">Loading...</p>
+                                </div>
+                                <div class="p-4 bg-gray-50 rounded-lg">
+                                    <p class="font-medium text-gray-700">Market Cap</p>
+                                    <p id="marketCap" class="text-gray-600">Loading...</p>
+                                </div>
+                            </div>
+                        </section>
+
+                        <!-- Products/Services -->
+                        <section class="space-y-4">
+                            <h3 class="text-lg font-semibold text-gray-900">Products & Services</h3>
+                            <div id="products" class="grid md:grid-cols-3 gap-4">
+                                <!-- Populated by JavaScript -->
+                            </div>
+                        </section>
+
+                        <!-- Leadership Team -->
+                        <section class="space-y-4">
+                            <h3 class="text-lg font-semibold text-gray-900">Leadership Team</h3>
+                            <div id="leadership" class="grid md:grid-cols-3 gap-4">
+                                <!-- Populated by JavaScript -->
+                            </div>
+                        </section>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        document.getElementById('companyForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const companyName = document.getElementById('companyName').value;
+            
+            // Show loader and hide results
+            document.getElementById('loader').style.display = 'block';
+            document.getElementById('results').classList.add('hidden');
+
+            // Simulate API call with timeout
+            setTimeout(() => {
+                // Hide loader and show results
+                document.getElementById('loader').style.display = 'none';
+                document.getElementById('results').classList.remove('hidden');
+
+                // Simulate data population
+                populateMockData(companyName);
+            }, 2000);
+        });
+
+        function populateMockData(companyName) {
+            // Mock data population
+            document.getElementById('industry').textContent = 'Technology';
+            document.getElementById('location').textContent = 'Silicon Valley, CA';
+            document.getElementById('revenue').textContent = '$10.5B (2023)';
+            document.getElementById('marketCap').textContent = '$50.2B';
+
+            // Products
+            const products = ['Product 1', 'Product 2', 'Product 3'];
+            const productsContainer = document.getElementById('products');
+            productsContainer.innerHTML = products.map(product => `
+                <div class="p-4 bg-gray-50 rounded-lg">
+                    <h4 class="font-medium text-gray-900">${product}</h4>
+                    <p class="text-gray-600">Product description goes here.</p>
+                </div>
+            `).join('');
+
+            // Leadership
+            const leaders = ['CEO', 'CTO', 'CFO'];
+            const leadershipContainer = document.getElementById('leadership');
+            leadershipContainer.innerHTML = leaders.map(role => `
+                <div class="p-4 bg-gray-50 rounded-lg">
+                    <h4 class="font-medium text-gray-900">${role}</h4>
+                    <p class="text-gray-600">John Doe</p>
+                </div>
+            `).join('');
+
+            // Update download links
+            document.getElementById('pptDownload').href = '#';
+            document.getElementById('pdfDownload').href = '#';
+        }
+    </script>
+<script>document.body.addEventListener('wheel', e => { if (!e.ctrlKey) return; e.preventDefault(); return }, { passive: false })</script>
+	</body>
+</html>
